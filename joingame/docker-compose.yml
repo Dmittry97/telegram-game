@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: joingame-app
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - mongo
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN:?задайте BOT_TOKEN в .env}
+      MONGODB_URI: mongodb://root:${MONGO_INITDB_ROOT_PASSWORD:-example}@mongo:27017/${MONGO_INITDB_DATABASE:-joingame}?authSource=admin
+
+  mongo:
+    image: mongo:7
+    container_name: joingame-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-example}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-joingame}
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+
+volumes:
+  mongo-data:
+
