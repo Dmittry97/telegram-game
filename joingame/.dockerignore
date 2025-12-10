@@ -1,0 +1,17 @@
+.next
+node_modules
+npm-debug.log
+Dockerfile
+.dockerignore
+.git
+.gitignore
+.vscode
+*.log
+*.swp
+*.swo
+*.tmp
+.env
+.env.local
+.env.production
+.env.development
+
