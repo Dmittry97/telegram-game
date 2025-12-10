@@ -15,12 +15,6 @@ type ParsedInitData = {
   [key: string]: any;
 };
 
-const botToken = process.env.BOT_TOKEN;
-if (!botToken) {
-  throw new Error("BOT_TOKEN не задан в переменных окружения");
-}
-const BOT_TOKEN = botToken;
-
 const createCheckString = (data: URLSearchParams) => {
   const pairs: string[] = [];
   data.forEach((value, key) => {
@@ -33,6 +27,14 @@ const createCheckString = (data: URLSearchParams) => {
 const getSecretKey = (token: string) =>
   crypto.createHmac("sha256", "WebAppData").update(token).digest();
 
+const getBotToken = () => {
+  const token = process.env.BOT_TOKEN;
+  if (!token) {
+    throw new Error("BOT_TOKEN не задан в переменных окружения");
+  }
+  return token;
+};
+
 export function verifyInitData(initData: string): ParsedInitData {
   const params = new URLSearchParams(initData);
   const receivedHash = params.get("hash");
@@ -41,7 +43,7 @@ export function verifyInitData(initData: string): ParsedInitData {
   }
 
   const checkString = createCheckString(params);
-  const secretKey = getSecretKey(BOT_TOKEN);
+  const secretKey = getSecretKey(getBotToken());
   const computedHash = crypto
     .createHmac("sha256", secretKey)
     .update(checkString)
